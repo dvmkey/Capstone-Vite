@@ -1,3 +1,4 @@
+logsBucket: "gs://scam-scam-logging-bucket"
 steps:
   - name: "gcr.io/cloud-builders/gcloud"
     args:
