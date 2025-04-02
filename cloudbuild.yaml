@@ -1,0 +1,9 @@
+steps:
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "scam-scam-service"
+      - "--source=scam-scam/dist"
+      - "--region=us-central1"
+      - "--platform=managed"
