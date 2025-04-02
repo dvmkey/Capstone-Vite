@@ -19,7 +19,7 @@ const LoginPage = () => {
     const endpoint = isNewUser ? "/signup" : "/login";
     
     try {
-      const response = await fetch(`http://127.0.0.1:5000${endpoint}`, {
+      const response = await fetch(`http://34.31.112.56:5000${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +47,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container-mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
           {message && (
