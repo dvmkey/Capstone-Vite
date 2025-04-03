@@ -4,6 +4,11 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 8080;
 
+
+app.get('/', (req, res) => {
+    res.send('Hello from Cloud Run!');
+  });
+/*
 // Serve static files with correct MIME types
 const staticPath = path.join(__dirname, 'scam-scam/dist');
 console.log(`Serving static files from: ${staticPath}`); // Add this line
@@ -22,7 +27,7 @@ app.get('{/*path}', (req, res) => {
   console.log(`Serving index.html from: ${indexPath}`); // add this line.
   res.sendFile(indexPath);
 });
-
+*/
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
