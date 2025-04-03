@@ -4,8 +4,14 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 8080;
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'scam-scam/dist')));
+// Serve static files with correct MIME types
+app.use(express.static(path.join(__dirname, 'scam-scam/dist'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
+  },
+}));
 
 // Catch-all route to serve index.html for React Router
 app.get('{/*path}', (req, res) => {
