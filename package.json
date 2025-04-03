@@ -1,6 +1,7 @@
 {
   "name": "capstone-vite",
   "version": "1.0.0",
+  "main": "index.js",
   "scripts": {
     "build": "cd scam-scam && npm install && npm run build",
     "start": "cd .. && node index.js"
