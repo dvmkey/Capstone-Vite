@@ -5,7 +5,10 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 // Serve static files with correct MIME types
-app.use(express.static(path.join(__dirname, 'scam-scam/dist'), {
+const staticPath = path.join(__dirname, 'scam-scam/dist');
+console.log(`Serving static files from: ${staticPath}`); // Add this line
+
+app.use(express.static(staticPath, {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript');
@@ -15,9 +18,11 @@ app.use(express.static(path.join(__dirname, 'scam-scam/dist'), {
 
 // Catch-all route to serve index.html for React Router
 app.get('{/*path}', (req, res) => {
-    res.sendFile(path.join(__dirname, 'scam-scam/dist', 'index.html'));
+  const indexPath = path.join(__dirname, 'scam-scam/dist/index.html');
+  console.log(`Serving index.html from: ${indexPath}`); // add this line.
+  res.sendFile(indexPath);
 });
 
 app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+  console.log(`Listening on port ${port}`);
 });
