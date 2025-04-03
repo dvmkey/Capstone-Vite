@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "cd scam-scam && npm install && npm run build",
-    "start": "node index.js"
+    "start": "cd .. && node index.js"
   },
   "keywords": [],
   "author": "",

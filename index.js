@@ -1,3 +1,4 @@
+console.log("index.js started (root level)!"); // Very first line
 const express = require('express');
 const path = require('path');
 
@@ -22,7 +23,6 @@ app.get('{/*path}', (req, res) => {
   console.log(`Serving index.html from: ${indexPath}`); // add this line.
   res.sendFile(indexPath);
 });
-
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
