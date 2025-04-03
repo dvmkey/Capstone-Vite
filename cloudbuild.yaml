@@ -9,6 +9,6 @@ steps:
       - "run"
       - "deploy"
       - "scam-scam-service"
-      - "--source=scam-scam/dist"
+      - "--source=."
       - "--region=us-central1"
       - "--platform=managed"
