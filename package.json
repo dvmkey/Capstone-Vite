@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "cd scam-scam && npm install && npm run build && cd .",
+    "build": "cd scam-scam && npm install && npm run build && cd . && npm install",
     "start": "node index.js",
     "start:dev": "nodemon index.js"
   },
