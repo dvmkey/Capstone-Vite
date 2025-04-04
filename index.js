@@ -18,6 +18,13 @@ app.get('/', (req,res) => {
 
 app.use('/api/v1/auth', authRouter);
 
+app.use('{/*path}', (req,res,next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: 'Route not found.',
+  })
+});
+
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
