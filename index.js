@@ -1,9 +1,11 @@
-console.log("index.js started (root level)!"); // Very first line
+require('dotenv').config({path: `${process.cwd()}/.env`});
+
 const express = require('express');
 const path = require('path');
+const authRouter = require('./route/authRoute');
 
 const app = express();
-const port = process.env.PORT || 8080;
+const PORT = process.env.APP_PORT || 8080;
 
 // Serve static files with correct MIME types
 const staticPath = path.join(__dirname, 'scam-scam/dist');
@@ -24,6 +26,17 @@ app.get('{/*path}', (req, res) => {
   res.sendFile(indexPath);
 });
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });
+
+// Additional Routes
+
+app.get('/rest', (req,res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Routed Successfully',
+  })
+});
+
+app.use('/api/v1/auth', authRouter);

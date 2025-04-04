@@ -4,13 +4,18 @@
   "main": "index.js",
   "scripts": {
     "build": "cd scam-scam && npm install && npm run build && cd .",
-    "start": "node index.js"
+    "start": "node index.js",
+    "start:dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
