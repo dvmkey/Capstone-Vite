@@ -38,7 +38,7 @@ module.exports = sequelize.define('user', {
         const hashPassword = bycrypt.hashSync(value, 10)
         this.setDataValue('password', hashPassword);
       } else {
-        throw new Error("New and confirmed passwords do not match.")
+        throw new Error('New and confirmed passwords do not match.');
       }
     }
   },
