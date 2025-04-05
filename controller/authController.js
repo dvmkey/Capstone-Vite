@@ -1,6 +1,6 @@
 const user = require("../db/models/user");
 
-const signup = (req,res,next) => {
+const signup = async (req,res,next) => {
     const body = req.body;
 
     if(!['1'].includes(body.userType)){
@@ -10,12 +10,13 @@ const signup = (req,res,next) => {
         });
     }
 
-    const newUser = user.create({
+    const newUser = await user.create({
         userType: body.userType,
         firstName: body.firstName,
-        lastnName: body.lastnName,
+        lastName: body.lastName,
         email: body.email,
         password: body.password,
+        confirmPassword: body.confirmPassword,
     });
 
     if (!newUser){
