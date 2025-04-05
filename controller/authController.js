@@ -1,4 +1,11 @@
 const user = require("../db/models/user");
+const jwt = require("jsonwebtoken");
+
+const generateToken = (payload) => {
+    return jwt.sign(payload, process.env.JWT_SECRET_KEY, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+};
 
 const signup = async (req,res,next) => {
     const body = req.body;
@@ -19,7 +26,15 @@ const signup = async (req,res,next) => {
         confirmPassword: body.confirmPassword,
     });
 
-    if (!newUser){
+    result = newUser.toJSON({});
+    delete result.password;
+    delete result.deletedAt;
+
+    result.token = generateToken({
+        id: result.id,
+    })
+
+    if (!result){
         return res.status(400).json({
             status: 'fail',
             message: 'Invalid User Type.',
@@ -28,7 +43,7 @@ const signup = async (req,res,next) => {
 
     return res.status(201).json({
         status: 'success',
-        data: newUser,
+        data: result,
     });
 };
 
