@@ -17,7 +17,7 @@ module.exports = {
               msg: 'User Type cannot be null'
           },
           notEmpty: {
-            msg: 'User Type cannot be empty'
+            msg: 'User Type cannot be empty' 
           },
         },
       },
