@@ -1,10 +1,15 @@
 logsBucket: "gs://scam-scam-logging-bucket"
 steps:
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["install"]
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["run", "build"]
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       - "run"
       - "deploy"
       - "scam-scam-service"
-      - "--source=scam-scam/dist"
+      - "--source=."
       - "--region=us-central1"
       - "--platform=managed"
+      - "--timeout=30s"
