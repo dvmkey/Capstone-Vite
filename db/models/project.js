@@ -1,16 +1,9 @@
-'use strict';
-const {
-  Model, Sequelize,
-  DataTypes
-} = require('sequelize');
+const sequelize = require("../../config/database");
+const { DataTypes } = require("sequelize");
+const bcrypt = require("bcrypt");
 
-const bycrypt = require('bcrypt');
-const sequelize = require('../../config/database');
-const AppError = require('../../utils/appError');
+module.exports = sequelize.define('project', {
 
-
-
-module.exports = sequelize.define('user', {
   id: {
     allowNull: false,
     autoIncrement: true,
@@ -103,11 +96,10 @@ module.exports = sequelize.define('user', {
   deletedAt: {
     type: DataTypes.DATE,
   },
-}, 
-{
-  paranoid: true,
-  freezeTableName: true,
-  modelName: 'user',
-}
 
-);
+}, {
+  paranoid: true,
+  modelName: 'project',
+  freezeTableName: true,
+
+})
