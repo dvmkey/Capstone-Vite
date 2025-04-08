@@ -26,11 +26,10 @@ app.listen(PORT, () => {
     console.log('Server up and running', PORT);
 });
 
-// Uncomment everything between this and "catch all" if you want things to work
-//const staticPath = path.join(__dirname, 'scam-scam/dist');
-//console.log(`Serving static files from: ${staticPath}`); // Add this line
+const staticPath = path.join(__dirname, 'scam-scam/dist');
+console.log(`Serving static files from: ${staticPath}`); // Add this line
 
-/*
+
 app.use(express.static(staticPath, {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.js')) {
@@ -38,7 +37,7 @@ app.use(express.static(staticPath, {
     }
   },
 }));
-*/
+
 
 // Catch-all route to serve index.html for React Router
 
