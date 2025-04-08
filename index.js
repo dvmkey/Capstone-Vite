@@ -1,5 +1,6 @@
 require('dotenv').config({ path: `${process.cwd()}/.env` });
 const express = require('express');
+const path = require('path');
 
 const authRouter = require('./route/authRoute');
 const projectRouter = require('./route/projectRoute');
@@ -29,7 +30,7 @@ app.listen(PORT, () => {
 const staticPath = path.join(__dirname, 'scam-scam/dist');
 console.log(`Serving static files from: ${staticPath}`); // Add this line
 
-/*
+
 app.use(express.static(staticPath, {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.js')) {
@@ -37,7 +38,6 @@ app.use(express.static(staticPath, {
     }
   },
 }));
-*/
 
 // Catch-all route to serve index.html for React Router
 
