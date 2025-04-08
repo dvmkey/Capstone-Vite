@@ -105,10 +105,10 @@ const restrictTo = (...userType) => {
 };
 
 const logCall = catchAsync(async (req, res, next) => {
-    const { name, availibility, notes, transcript } = req.body;
+    const { scammerName, scammerDeal, specialNotes, fullTranscript } = req.body;
 
-    if (!name || !availibility || !notes || !transcript) {
-        return next(new AppError('No Data', 600));
+    if ( !fullTranscript ) {
+        return next(new AppError('No Transcript Data', 600));
     }
 
     return res.json({
