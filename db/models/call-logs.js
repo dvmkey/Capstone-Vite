@@ -5,7 +5,6 @@ const sequelize = require("../../config/database");
 module.exports = sequelize.define(
     'call_log', {
         user: {
-            allowNull: false,
             type: Datatypes.INTEGER,
         },
         id: {

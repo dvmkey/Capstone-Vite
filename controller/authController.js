@@ -104,4 +104,17 @@ const restrictTo = (...userType) => {
     return checkPermission;
 };
 
-module.exports = { signup, login, authentication, restrictTo };
+const logCall = catchAsync(async (req, res, next) => {
+    const { name, availibility, notes, transcript } = req.body;
+
+    if (!name || !availibility || !notes || !transcript) {
+        return next(new AppError('No Data', 600));
+    }
+
+    return res.json({
+        status: 'success',
+        message: 'Successfully posted to Call Log service.'
+    });
+});
+
+module.exports = { signup, login, authentication, restrictTo, logCall };
