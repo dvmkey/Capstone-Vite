@@ -1,31 +1,47 @@
-const {Datatypes } = require(sequelize)
+'use strict';
+const { DataTypes } = require('sequelize');
 
 const sequelize = require("../../config/database");
 
-module.exports = sequelize.define(
-    'call_log', {
+const callLogs = sequelize.define(
+    'call-logs', {
         user: {
-            type: Datatypes.INTEGER,
-        },
-        id: {
+            allowNull: false,
+            type: DataTypes.INTEGER
+          },
+          id: {
             allowNull: false,
             primaryKey: true,
             autoIncrement: true,
-            type: Datatypes.INTEGER
-        },
-        availability: {
-            type: Datatypes.STRING
-        },
-        notes: {
-            type: Datatypes.STRING
-        },
-        transcript: {
-            type: Datatypes.STRING
-        }
+            type: DataTypes.INTEGER
+          },
+          scammerName: {
+            type: DataTypes.STRING
+          },
+          scammerDeal: {
+            type: DataTypes.STRING
+          },
+          specialNotes: {
+            type: DataTypes.STRING
+          },
+          callStart: {
+            type: DataTypes.DATE
+          },
+          callEnd: {
+            type: DataTypes.DATE
+          },
+          fullTranscript: {
+            type: DataTypes.DATE
+          },
+          deletedAt: {
+            type: DataTypes.DATE
+          },
     },
     {
         paranoid: true,
         freezeTableName: true,
-        modelName: 'call_log',
+        modelName: 'call-logs',
     }
 )
+
+module.exports = callLogs;
