@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const callLogs = require('../db/models/call-logs');
 
 const generateToken = (payload) => {
     return jwt.sign(payload, process.env.JWT_SECRET_KEY, {
@@ -104,4 +105,35 @@ const restrictTo = (...userType) => {
     return checkPermission;
 };
 
-module.exports = { signup, login, authentication, restrictTo };
+const logCall = catchAsync(async (req, res, next) => {
+    const { user, scammerName, scammerDeal, specialNotes, 
+        fullTranscript, callStart, callEnd } = req.body;
+
+    if ( !fullTranscript ) {
+        return next(new AppError('No Transcript Data', 600));
+    }
+
+    const newLog = await callLogs.create({
+        user: body.user,
+        scammerName: body.scammerName,
+        scammerDeal: body.scammerDeal,
+        specialNotes: body.specialNotes,
+        fullTranscript: body.fullTranscript,
+        callStart: body.callStart,
+        callEnd: body.callEnd
+    });
+
+    if (!newLog) {
+        return next(new AppError('Failed to create the log', 400));
+    }
+
+    const result = newLog.toJSON;
+
+    return res.status(202).json({
+        status: 'success',
+        message: 'Successfully posted to Call Log service.',
+        data: result
+    });
+});
+
+module.exports = { signup, login, authentication, restrictTo, logCall };
