@@ -5,6 +5,8 @@ import "./styles.css";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [isNewUser, setIsNewUser] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
@@ -18,25 +20,38 @@ const LoginPage = () => {
     
     const endpoint = isNewUser ? "/signup" : "/login";
     
+    const requestBody = isNewUser 
+      ? { email, password, confirmPassword: password, firstName, lastName, userType: "1" } 
+      : { email, password };
+    
     try {
-      const response = await fetch(`http://34.31.112.56:5000${endpoint}`, {
+      const response = await fetch(`/api/v1/auth${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
-        credentials: "omit" 
+        body: JSON.stringify(requestBody),
+        credentials: "include" 
       });
   
       const data = await response.json();
   
       if (response.ok) {
-        setMessage(data.message);
-        if (!isNewUser) {
+        setMessage(data.status === 'success' ? "Operation successful!" : data.message);
+        
+        if (!isNewUser && data.status === 'success') {
           console.log("Login successful");
+          
+          if (data.token) {
+            localStorage.setItem('jwt', data.token);
+          }
+          
+          setTimeout(() => {
+            window.location.href = '';
+          }, 1500);
         }
       } else {
-        setError(data.error || "An unknown error occurred");
+        setError(data.message || "An unknown error occurred");
       }
     } catch (error) {
       setError("Connection failed. Make sure the backend server is running.");
@@ -47,7 +62,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container-mt-5">
+    <div className="container mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
           {message && (
@@ -66,6 +81,32 @@ const LoginPage = () => {
             </div>
             <div className="card-body">
               <form onSubmit={handleSubmit}>
+                {isNewUser && (
+                  <>
+                    <div className="form-group mb-3">
+                      <label htmlFor="firstName">First Name</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="firstName"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group mb-3">
+                      <label htmlFor="lastName">Last Name</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="lastName"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </>
+                )}
                 <div className="form-group mb-3">
                   <label htmlFor="email">Email Address</label>
                   <input
