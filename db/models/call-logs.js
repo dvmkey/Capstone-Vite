@@ -31,7 +31,7 @@ const callLogs = sequelize.define(
             type: DataTypes.DATE
           },
           fullTranscript: {
-            type: DataTypes.STRING
+            type: DataTypes.TEXT
           },
           deletedAt: {
             type: DataTypes.DATE
