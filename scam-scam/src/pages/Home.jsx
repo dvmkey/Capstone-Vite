@@ -1,33 +1,33 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles.css";
-import { Link } from "react-router-dom"; 
 
 const HomePage = () => {
   return (
     <div>
       {/* Navigation Bar */}
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <a className="navbar-brand" href="/">SCAM SCAM</a>
+        <Link className="navbar-brand" to="/">SCAM SCAM</Link>
         <div className="collapse navbar-collapse">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
               <a className="nav-link" href="#feature-section">About</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/phone-list-manager">Whitelist/Blacklist</a>
+              <Link className="nav-link" to="/phone-list-manager">Whitelist/Blacklist</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/saved-calls">Models</a>
+              <Link className="nav-link" to="/saved-calls">Models</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/saved-calls">Saved Calls</a>
+              <Link className="nav-link" to="/saved-calls">Saved Calls</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/performance">Performance</a>
+              <Link className="nav-link" to="/performance">Performance</Link>
             </li>
           </ul>
-          <a href="/login" className="btn btn-primary">Login</a>
+          <Link to="/login" className="btn btn-primary">Login</Link>
         </div>
       </nav>
 
@@ -41,7 +41,7 @@ const HomePage = () => {
             $25.4 billion. By using AI to engage with scammers, SCAM SCAM aims to
             reduce their profits and discourage spam calls.
           </p>
-          <a href="/login" className="btn btn-primary">Login</a>
+          <Link to="/login" className="btn btn-primary">Login</Link>
         </div>
       </header>
 
@@ -52,14 +52,14 @@ const HomePage = () => {
             <div className="home-section-box">
               <h2>Whitelist</h2>
               <p>LIST OF WHITELISTED (ALLOWED) NUMBERS</p>
-              <a href="/phone-list-manager" className="btn btn-secondary">Add Number</a>
+              <Link to="/phone-list-manager" className="btn btn-secondary">Add Number</Link>
             </div>
           </div>
           <div className="col-md-6 mb-4">
             <div className="home-section-box">
               <h2>Blacklist</h2>
               <p>LIST OF BLACKLISTED (BLOCKED) NUMBERS</p>
-              <a href="/phone-list-manager" className="btn btn-secondary">Add Number</a>
+              <Link to="/phone-list-manager" className="btn btn-secondary">Add Number</Link>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ const HomePage = () => {
         <div className="home-section-box">
           <h2>Saved Calls</h2>
           <p>Select any of your past calls and see a full transcript.</p>
-          <a href="/saved-calls" className="btn btn-secondary">View Saved Calls</a>
+          <Link to="/saved-calls" className="btn btn-secondary">View Saved Calls</Link>
         </div>
       </section>
 
@@ -106,11 +106,11 @@ const HomePage = () => {
         <div className="home-section-box">
           <h2>Performance of Your Models</h2>
           <p>
-            Most Used: 70 Year Old Woman <br /> 
-            Average Time on Call: 1 minute 47 seconds <br /> 
+            Most Used: 70 Year Old Woman <br />
+            Average Time on Call: 1 minute 47 seconds <br />
             Average Accuracy of Model: 91%
           </p>
-          <a href="/performance" className="btn btn-secondary">View Performance of Each Model</a>
+          <Link to="/performance" className="btn btn-secondary">View Performance of Each Model</Link>
         </div>
       </section>
     </div>
