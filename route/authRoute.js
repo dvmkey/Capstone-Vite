@@ -8,6 +8,6 @@ router.route('/login').post(login);
 
 router.route('/log-call').post(logCall);
 
-router.route('/log-call').get(pullCall);
+router.route('/pull-call').post(pullCall);
 
 module.exports = router;
