@@ -106,12 +106,7 @@ const restrictTo = (...userType) => {
 };
 
 const logCall = catchAsync(async (req, res, next) => {
-    const { user, scammerName, scammerDeal, specialNotes, 
-        fullTranscript, callStart, callEnd } = req.body;
-
-    if ( !fullTranscript ) {
-        return next(new AppError('No Transcript Data', 600));
-    }
+    const body = req.body;
 
     const newLog = await callLogs.create({
         user: body.user,
@@ -120,14 +115,14 @@ const logCall = catchAsync(async (req, res, next) => {
         specialNotes: body.specialNotes,
         fullTranscript: body.fullTranscript,
         callStart: body.callStart,
-        callEnd: body.callEnd
+        callEnd: body.callEnd,
     });
 
     if (!newLog) {
         return next(new AppError('Failed to create the log', 400));
     }
 
-    const result = newLog.toJSON;
+    const result = newLog.toJSON();
 
     return res.status(202).json({
         status: 'success',

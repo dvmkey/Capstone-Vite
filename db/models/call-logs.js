@@ -31,7 +31,7 @@ const callLogs = sequelize.define(
             type: DataTypes.DATE
           },
           fullTranscript: {
-            type: DataTypes.DATE
+            type: DataTypes.STRING
           },
           deletedAt: {
             type: DataTypes.DATE
@@ -41,6 +41,7 @@ const callLogs = sequelize.define(
         paranoid: true,
         freezeTableName: true,
         modelName: 'call-logs',
+        timestamps: true,
     }
 )
 
