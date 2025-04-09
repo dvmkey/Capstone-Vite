@@ -108,7 +108,14 @@ const restrictTo = (...userType) => {
 const logCall = catchAsync(async (req, res, next) => {
     const body = req.body;
 
-    return next(new AppError('Well, you made it this far', 696))
+    console.log('--- Incoming Body Data ---');
+    console.log('User:', body.user);
+    console.log('Scammer:', body.scammerName); // Corrected to use the actual property
+    console.log('Deal:', body.scammerDeal);   // Corrected to use the actual property
+    console.log('Notes:', body.specialNotes); // Corrected to use the actual property
+    console.log('Transcript:', body.fullTranscript); // Corrected to use the actual property
+    console.log('Start:', body.callStart);
+    console.log('End:', body.callEnd);
 
     const newLog = await callLogs.create({
         user: body.user,
