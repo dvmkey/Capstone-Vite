@@ -107,17 +107,19 @@ const restrictTo = (...userType) => {
 
 const logCall = catchAsync(async (req, res, next) => {
     const body = req.body;
-
+  
     console.log('--- Incoming Body Data ---');
     console.log('User:', body.user);
-    console.log('Scammer:', body.scammerName); // Corrected to use the actual property
-    console.log('Deal:', body.scammerDeal);   // Corrected to use the actual property
-    console.log('Notes:', body.specialNotes); // Corrected to use the actual property
-    console.log('Transcript:', body.fullTranscript); // Corrected to use the actual property
+    console.log('Scammer:', body.scammerName);
+    console.log('Deal:', body.scammerDeal);
+    console.log('Notes:', body.specialNotes);
+    console.log('Transcript:', body.fullTranscript);
     console.log('Start:', body.callStart);
     console.log('End:', body.callEnd);
-
-    const newLog = await callLogs.create({
+  
+    let newLog;
+    try {
+      newLog = await callLogs.create({
         user: body.user,
         scammerName: body.scammerName,
         scammerDeal: body.scammerDeal,
@@ -125,19 +127,23 @@ const logCall = catchAsync(async (req, res, next) => {
         fullTranscript: body.fullTranscript,
         callStart: body.callStart,
         callEnd: body.callEnd,
-    });
-
-    if (!newLog) {
-        return next(new AppError('Failed to create the log', 400));
+      });
+    } catch (error) {
+      console.error('Error during callLogs.create():', error);
+      return next(new AppError('Error saving call log to the database', 500));
     }
-
+  
+    if (!newLog) {
+      return next(new AppError('Failed to create the log (Sequelize did not return a new object)', 400));
+    }
+  
     const result = newLog.toJSON();
-
+  
     return res.status(202).json({
-        status: 'success',
-        message: 'Successfully posted to Call Log service.',
-        data: result
+      status: 'success',
+      message: 'Successfully posted to Call Log service.',
+      data: result
     });
-});
+  });
 
 module.exports = { signup, login, authentication, restrictTo, logCall };
