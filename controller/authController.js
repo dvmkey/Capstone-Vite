@@ -108,7 +108,7 @@ const restrictTo = (...userType) => {
 const logCall = catchAsync(async (req, res, next) => {
     const body = req.body;
 
-    return next(new AppError('Well, you made it this far', 6969))
+    return next(new AppError('Well, you made it this far', 696))
 
     const newLog = await callLogs.create({
         user: body.user,
