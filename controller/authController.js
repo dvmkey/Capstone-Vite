@@ -4,6 +4,9 @@ const bcrypt = require('bcrypt');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const callLogs = require('../db/models/call-logs');
+const express = require('express');
+const app = express();
+app.use(express.json());
 
 const generateToken = (payload) => {
     return jwt.sign(payload, process.env.JWT_SECRET_KEY, {
