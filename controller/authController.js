@@ -146,4 +146,20 @@ const logCall = catchAsync(async (req, res, next) => {
     });
   });
 
-module.exports = { signup, login, authentication, restrictTo, logCall };
+const pullCall = catchAsync(async (req, res, next) => {
+    console.log('Validating Request');
+    const { user } = req.body;
+
+    console.log('Pulling information from database that matches query');
+    const allCalls = await callLogs.findAll({where: { user } })
+
+    console.log('Converting to JSON.');
+    const result = allCalls.map(allCalls => allCalls.toJSON());
+
+    return res.json({
+        status: 'success',
+        result,
+    });
+})
+
+module.exports = { signup, login, authentication, restrictTo, logCall, pullCall };
