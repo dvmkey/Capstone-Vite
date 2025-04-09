@@ -21,7 +21,7 @@ app.use('/api/v1/users', userRouter);
 
 app.use(globalErrorHandler);
 
-const PORT = process.env.APP_PORT || 4000;
+const PORT = process.env.APP_PORT || 8080;
 
 app.listen(PORT, () => {
     console.log('Server up and running', PORT);
