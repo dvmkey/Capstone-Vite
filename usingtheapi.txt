@@ -1,0 +1,88 @@
+### Extension: /api/v1/app/log-call
+```Format expected for log-call:
+
+{
+    "user": "1",
+    "scammerName": "Super long convo",
+    "scammerDeal": "here?",
+    "specialNotes": "work",
+    "fullTranscript": "Any extremely long conversation"
+    "callStart": "2025-04-08T14:27:35.000Z",
+    "callEnd": "2025-04-08T14:27:35.000Z"
+}```
+
+Returns no notable informaion
+
+
+### Extension: /api/v1/auth/signup
+```Format expected for signup:
+
+{
+    "userType": "1",
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "email": "example@gmil.com",
+    "password": "testpass",
+    "confirmPassword": "testpass"
+}```
+
+Returns no notable informaion
+
+
+### Extension: /api/v1/app/pull-(pref, white, phone)
+```Format expected for pull(pref, white, phone):
+
+{    
+    "ownedBy": "1"
+}```
+
+Returns, preferences(AI), whitelist, phonenumber.  The UID sent must exist in the 'user' table.
+
+
+### Extension: /api/v1/auth/login
+```Format expected for login:
+
+{
+    "email" : "example@gmail.com",
+    "password" : "testpass"
+}```
+
+Returns a token or an error depending on if the login is correct.
+
+
+### Extension: /api/v1/users/set-(white, phone)
+```Format expected for (white/phone)):
+
+{
+    "ownedBy" : "1",
+    "phoneNumber" : "7099991000"
+}```
+
+Returns nothing.
+
+
+### Extension: /api/v1/users/set-preferences
+```Format expected for set preferences:
+
+{
+    "ownedBy" : "1",
+    "voice" : "placeholder",
+    "prompt" : "what do you want?"
+}```
+
+Returns nothing.
+
+
+### Extension: /api/v1/users/pull-call
+```Format expected for pull call:
+
+{
+    "user" : "1"
+}```
+
+NOTE: THIS FUNCTION DOES NOT CHECK IF USER IS VALID
+I will likely change the schema to handle this appropriately in the future
+Pulls all calll logs for a user
+
+
+

@@ -1,3 +1,4 @@
+const sequelize = require('./config/database');
 require('dotenv').config({ path: `${process.cwd()}/.env` });
 const express = require('express');
 const path = require('path');
@@ -44,7 +45,9 @@ app.get(/.*/, (req, res) => {
   res.sendFile(path.join(staticPath, 'index.html'));
 });
 
-
+/*sequelize.sync({ force: true }).then(() => {
+  console.log('Database synced (force: true) — all tables dropped and recreated.');
+});*/
 
 
 

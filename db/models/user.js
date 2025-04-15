@@ -135,7 +135,7 @@ project.belongsTo(user, {
     foreignKey: 'createdBy',
 });
 
-user.hasMany(whitelist, { foriegnkey: 'ownedby'});
+user.hasMany(whitelist, { foriegnkey: 'ownedBy'});
 whitelist.belongsTo(user, {
     foriegnkey: 'ownedBy',
 });

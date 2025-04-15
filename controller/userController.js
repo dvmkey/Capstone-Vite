@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const preferences = require('../db/models/preferences');
 const whitelist = require('../db/models/whitelist');
 const phoneNumber = require('../db/models/phoneNumber');
+const callLogs = require('../db/models/call-logs');
 
 const getAllUser = catchAsync(async (req, res, next) => {
     const users = await user.findAndCountAll({
