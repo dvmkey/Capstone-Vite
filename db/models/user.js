@@ -7,6 +7,7 @@ const AppError = require('../../utils/appError');
 const project = require('./project');
 const phoneNumbers = require('./phoneNumber');
 const preferences = require('./preferences');
+const whitelist = require('./whitelist');
 
 const user = sequelize.define(
     'user',
@@ -134,9 +135,9 @@ project.belongsTo(user, {
     foreignKey: 'createdBy',
 });
 
-/*user.hasMany(whitelist, { foriegnkey: 'ownedby'});
+user.hasMany(whitelist, { foriegnkey: 'ownedby'});
 whitelist.belongsTo(user, {
     foriegnkey: 'ownedBy',
-});*/
+});
 
 module.exports = user;

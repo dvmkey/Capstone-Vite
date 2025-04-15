@@ -1,5 +1,8 @@
 const catchAsync = require('../utils/catchAsync');
 const callLogs = require('../db/models/call-logs');
+const preferences = require('../db/models/preferences');
+const whitelist = require('../db/models/whitelist');
+const phoneNumber = require('../db/models/phoneNumber');
 
 const logCall = catchAsync(async (req, res, next) => {
     const body = req.body;
@@ -42,4 +45,52 @@ const logCall = catchAsync(async (req, res, next) => {
     });
 });
 
-module.exports = { logCall };
+const pullPref = catchAsync(async (req, res, next) => {
+    console.log('Validating Request');
+    const { ownedBy } = req.body;
+
+    console.log('Pulling information from database that matches query');
+    const recentPref = await preferences.findOne({where: { ownedBy }, order: [['id', 'DESC']], });
+
+    console.log('Converting to JSON.');
+    const result = recentPref.toJSON();
+
+    return res.json({
+        status: 'success',
+        result,
+    });
+})
+
+const pullWhite = catchAsync(async (req, res, next) => {
+    console.log('Validating Request');
+    const { ownedBy } = req.body;
+
+    console.log('Pulling information from database that matches query');
+    const whiteList = await whitelist.findAll({where: { ownedBy }});
+
+    console.log('Converting to JSON.');
+    const result = whiteList.map(whiteList => whiteList.toJSON());
+
+    return res.json({
+        status: 'success',
+        result,
+    });
+})
+
+const pullPhone = catchAsync(async (req, res, next) => {
+  console.log('Validating Request');
+  const { ownedBy } = req.body;
+
+  console.log('Pulling information from database that matches query');
+  const phonenumber = await phoneNumber.findAll({where: { ownedBy }});
+
+  console.log('Converting to JSON.');
+  const result = phonenumber.map(phonenumber => phonenumber.toJSON());
+
+  return res.json({
+      status: 'success',
+      result,
+  });
+})
+
+module.exports = { logCall, pullPref, pullWhite, pullPhone };

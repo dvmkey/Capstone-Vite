@@ -2,6 +2,8 @@ const { Sequelize } = require('sequelize');
 const user = require('../db/models/user');
 const catchAsync = require('../utils/catchAsync');
 const preferences = require('../db/models/preferences');
+const whitelist = require('../db/models/whitelist');
+const phoneNumber = require('../db/models/phoneNumber');
 
 const getAllUser = catchAsync(async (req, res, next) => {
     const users = await user.findAndCountAll({
@@ -61,4 +63,56 @@ const setPreferences = catchAsync(async (req, res, next) => {
     });
 });
 
-module.exports = { getAllUser, pullCall, setPreferences };
+const setWhitelist = catchAsync(async (req, res, next) => {
+    const body = req.body;
+    console.log('--Data Payload for Whitelist Recieved--');
+    let newWhiteNumber;
+    try {
+        newWhiteNumber = await whitelist.create({
+            ownedBy: body.ownedBy,
+            phoneNumber: body.phoneNumber,
+        })
+    }  catch (error) {
+        console.error('Error during whitelist.create():', error);
+        return next(new AppError('Error saving whitelist to the database', 500));
+    }
+
+    if (!newWhiteNumber) {
+        return next(new AppError('Failed to set whitelist (Sequelize did not return a new object)', 400));
+    }
+
+    const result = newWhiteNumber.toJSON();
+    return res.status(204).json({
+        status: 'success',
+        message: 'Successfully posted to whitelist service.',
+        data: result
+    });
+});
+
+const setPhoneNumber = catchAsync(async (req, res, next) => {
+    const body = req.body;
+    console.log('--Data Payload for phone number Recieved--');
+    let newPhoneNumber;
+    try {
+        newPhoneNumber = await phoneNumber.create({
+            ownedBy: body.ownedBy,
+            phoneNumber: body.phoneNumber,
+        })
+    }  catch (error) {
+        console.error('Error during phoneNumber.create():', error);
+        return next(new AppError('Error saving phone number to the database', 500));
+    }
+
+    if (!newPhoneNumber) {
+        return next(new AppError('Failed to set phone number (Sequelize did not return a new object)', 400));
+    }
+
+    const result = newPhoneNumber.toJSON();
+    return res.status(205).json({
+        status: 'success',
+        message: 'Successfully posted to phone number service.',
+        data: result
+    });
+});
+
+module.exports = { getAllUser, pullCall, setPreferences, setWhitelist, setPhoneNumber };
