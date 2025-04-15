@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const sequelize = require('../../config/database');
 const AppError = require('../../utils/appError');
 const project = require('./project');
+const phoneNumbers = require('./phoneNumber');
+const preferences = require('./preferences');
 
 const user = sequelize.define(
     'user',
@@ -116,6 +118,16 @@ const user = sequelize.define(
         modelName: 'user',
     }
 );
+
+user.hasOne(preferences, { foreignKey: 'ownedBy' });
+preferences.belongsTo(user, {
+    foreignKey: 'ownedBy'
+});
+
+user.hasMany(phoneNumbers, { foriegnkey: 'ownedBy'});
+phoneNumbers.belongsTo(user, { 
+    foriegnkey: 'ownedBy',
+});
 
 user.hasMany(project, { foreignKey: 'createdBy' });
 project.belongsTo(user, {
