@@ -1,9 +1,36 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles.css";
 
 const HomePage = () => {
+  const [userName, setUserName] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    const storedName = localStorage.getItem('userName');
+    
+    if (token) {
+      setIsLoggedIn(true);
+      
+      if (storedName) {
+        setUserName(storedName);
+      } else {
+        setUserName("User");
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userId');
+    setIsLoggedIn(false);
+    window.location.href = '/login';
+  };
+
   return (
     <div>
       {/* Navigation Bar */}
@@ -27,9 +54,20 @@ const HomePage = () => {
               <Link className="nav-link" to="/performance">Performance</Link>
             </li>
           </ul>
-          <Link to="/login" className="btn btn-primary">Login</Link>
+          {isLoggedIn ? (
+            <button onClick={handleLogout} className="btn btn-outline-danger">Logout</button>
+          ) : (
+            <Link to="/login" className="btn btn-primary">Login</Link>
+          )}
         </div>
       </nav>
+
+      {/* Welcome Message */}
+      {isLoggedIn && (
+        <div className="alert alert-success text-center mt-3">
+          <h3>Welcome, {userName}!</h3>
+        </div>
+      )}
 
       {/* Main Section */}
       <header className="text-center my-5 container">
@@ -41,7 +79,7 @@ const HomePage = () => {
             $25.4 billion. By using AI to engage with scammers, SCAM SCAM aims to
             reduce their profits and discourage spam calls.
           </p>
-          <Link to="/login" className="btn btn-primary">Login</Link>
+          {!isLoggedIn && <Link to="/login" className="btn btn-primary">Login</Link>}
         </div>
       </header>
 

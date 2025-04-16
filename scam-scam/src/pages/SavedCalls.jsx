@@ -9,23 +9,26 @@ const SavedCalls = () => {
   const [filterScamType, setFilterScamType] = useState("all");
 
   useEffect(() => {
-    fetch("/api/v1/auth/pull-call", {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
+  
+    fetch("/api/v1/users/pull-call", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        user: '888', 
+        user: userId,
       }),
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === "success") {
-        setCalls(data.result); 
-      }
-    })
-    .catch(error => console.error("Error fetching call data:", error));
-  }, []);
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "success") {
+          setCalls(data.result);
+        }
+      })
+      .catch((error) => console.error("Error fetching call data:", error));
+  }, []);  
 
   const uniqueModels = [...new Set(calls.map(call => call.scammerName))];
   const uniqueScamTypes = [...new Set(calls.map(call => call.scammerDeal))];

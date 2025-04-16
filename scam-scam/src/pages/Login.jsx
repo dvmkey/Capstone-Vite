@@ -39,15 +39,28 @@ const LoginPage = () => {
       if (response.ok) {
         setMessage(data.status === 'success' ? "Operation successful!" : data.message);
         
-        if (!isNewUser && data.status === 'success') {
-          console.log("Login successful");
-          
-          if (data.token) {
+        if (data.status === 'success') {
+          if (isNewUser) {
+            localStorage.setItem('jwt', data.data.token);
+            localStorage.setItem('userName', data.data.firstName);
+            localStorage.setItem('userId', data.data.id);
+          } else {
             localStorage.setItem('jwt', data.token);
+            
+            try {
+              const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
+              localStorage.setItem('userId', tokenPayload.id);
+              
+              if (localStorage.getItem('userName') === null) {
+                localStorage.setItem('userName', email.split('@')[0]);
+              }
+            } catch (err) {
+              console.error("Error parsing token:", err);
+            }
           }
           
           setTimeout(() => {
-            window.location.href = '/home';
+            window.location.href = '/';
           }, 1500);
         }
       } else {
