@@ -110,20 +110,20 @@ const HomePage = () => {
           <div className="row">
             <div className="col-md-4 mb-3">
               <div className="model-box">
-                <h3>70 Year Old Woman</h3>
-                <p>A woman who has zero understanding of any technology.</p>
+                <h3>Texan Dude</h3>
+                <p>Extremely western man.</p>
               </div>
             </div>
             <div className="col-md-4 mb-3">
               <div className="model-box">
-                <h3>Gullible Young Man</h3>
-                <p>Will genuinely fall for anything.</p>
+                <h3>Jack Sparrow</h3>
+                <p>Captain of the Black Pearl.</p>
               </div>
             </div>
             <div className="col-md-4 mb-3">
               <div className="model-box">
-                <h3>Other Model</h3>
-                <p>idk I can't think of another example.</p>
+                <h3>Shaggy</h3>
+                <p>Scared of ghosts and in love with food.</p>
               </div>
             </div>
           </div>
@@ -144,7 +144,7 @@ const HomePage = () => {
         <div className="home-section-box">
           <h2>Performance of Your Models</h2>
           <p>
-            Most Used: 70 Year Old Woman <br />
+            Most Used: Texan Dude <br />
             Average Time on Call: 1 minute 47 seconds <br />
             Average Accuracy of Model: 91%
           </p>
