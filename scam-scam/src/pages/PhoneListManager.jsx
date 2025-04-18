@@ -1,6 +1,51 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles.css";
+
+const apiRequest = async (url, method, body) => {
+  const token = localStorage.getItem('jwt');
+  
+  try {
+    const response = await fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(body)
+    });
+    
+    return await response.json();
+  } catch (error) {
+    console.error("API request failed:", error);
+    throw error;
+  }
+};
+
+const Header = () => {
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4">
+      <Link className="navbar-brand" to="/">SCAM SCAM</Link>
+      <div className="collapse navbar-collapse">
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item">
+            <Link className="nav-link" to="/">Home</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link active" to="/phone-list-manager">Whitelist/Blacklist</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/saved-calls">Saved Calls</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/performance">Performance</Link>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  );
+};
 
 const PhoneListManager = () => {
   const userId = localStorage.getItem('userId');
@@ -13,40 +58,49 @@ const PhoneListManager = () => {
   const [newNotes, setNewNotes] = useState("");
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchPhoneLists = async () => {
-      if (!userId) return;
-  
-      try {
-        setLoading(true);
-  
-        const whitelistResponse = await apiRequest('/api/v1/app/pull-white', 'POST', {
-          ownedBy: userId,
-        });
-  
-        if (whitelistResponse.status === 'success') {
-          setWhitelist(whitelistResponse.result);
-        }
-  
-        const phoneNumbersResponse = await apiRequest('/api/v1/app/pull-phone', 'POST', {
-          ownedBy: userId,
-        });
-  
-        if (phoneNumbersResponse.status === 'success') {
-          setBlacklist(phoneNumbersResponse.result);
-        }
-      } catch (err) {
-        setError('Failed to load phone lists');
-        console.error('Error fetching phone lists:', err);
-      } finally {
-        setLoading(false);
+  const fetchPhoneLists = async () => {
+    if (!userId) {
+      setError('User ID not found. Please log in again.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const whitelistResponse = await apiRequest('/api/v1/app/pull-white', 'POST', {
+        ownedBy: userId,
+      });
+
+      console.log("Whitelist response:", whitelistResponse);
+      
+      if (whitelistResponse.status === 'success') {
+        const whitelistData = whitelistResponse.result || [];
+        setWhitelist(whitelistData);
       }
-    };
-  
+
+      const phoneNumbersResponse = await apiRequest('/api/v1/app/pull-phone', 'POST', {
+        ownedBy: userId,
+      });
+
+      console.log("Blacklist response:", phoneNumbersResponse);
+      
+      if (phoneNumbersResponse.status === 'success') {
+        const blacklistData = phoneNumbersResponse.result || [];
+        setBlacklist(blacklistData);
+      }
+    } catch (err) {
+      setError('Failed to load phone lists');
+      console.error('Error fetching phone lists:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchPhoneLists();
   }, [userId]);
   
-
   const addToList = async (list) => {
     if (!newNumber) return;
     
@@ -54,32 +108,26 @@ const PhoneListManager = () => {
       let response;
       
       if (list === "whitelist") {
-        response = await apiRequest('/api/v1/user/set-white', 'POST', {
-          ownedBy: user.id,
+        response = await apiRequest('/api/v1/users/set-white', 'POST', {
+          ownedBy: userId, 
           phoneNumber: newNumber
         });
         
+        console.log("Add to whitelist response:", response);
+        
         if (response.status === 'success') {
-          setWhitelist([...whitelist, {
-            id: response.data.id,
-            phoneNumber: response.data.phoneNumber,
-            name: newName || "Unnamed",
-            notes: newNotes || ""
-          }]);
+          await fetchPhoneLists();
         }
       } else {
-        response = await apiRequest('/api/v1/user/set-phone', 'POST', {
-          ownedBy: user.id,
+        response = await apiRequest('/api/v1/users/set-phone', 'POST', {
+          ownedBy: userId, 
           phoneNumber: newNumber
         });
         
+        console.log("Add to blacklist response:", response);
+        
         if (response.status === 'success') {
-          setBlacklist([...blacklist, {
-            id: response.data.id,
-            phoneNumber: response.data.phoneNumber,
-            name: newName || "Unnamed",
-            notes: newNotes || ""
-          }]);
+          await fetchPhoneLists();
         }
       }
       
@@ -90,6 +138,20 @@ const PhoneListManager = () => {
     } catch (err) {
       setError(`Failed to add number to ${list}`);
       console.error(`Error adding number to ${list}:`, err);
+    }
+  };
+
+  const removeFromList = async (itemId, listType) => {
+    try {
+      if (listType === "whitelist") {
+        setWhitelist(whitelist.filter(item => item.id !== itemId));
+      } else {
+        setBlacklist(blacklist.filter(item => item.id !== itemId));
+      }
+      
+    } catch (err) {
+      setError(`Failed to remove number from ${listType}`);
+      console.error(`Error removing number from ${listType}:`, err);
     }
   };
 
@@ -108,6 +170,7 @@ const PhoneListManager = () => {
           {error && (
             <div className="alert alert-danger" role="alert">
               {error}
+              <button className="btn-close float-end" onClick={() => setError(null)}></button>
             </div>
           )}
           
@@ -203,13 +266,14 @@ const PhoneListManager = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {(activeTab === "whitelist" ? whitelist : blacklist).map(item => (
-                          <tr key={item.id}>
+                        {(activeTab === "whitelist" ? whitelist : blacklist).map((item, index) => (
+                          <tr key={item.id || item.phoneNumber || index}>
                             <td>{item.phoneNumber}</td>
                             <td>
                               <div className="btn-group btn-group-sm">
                                 <button 
                                   className="btn btn-outline-danger"
+                                  onClick={() => removeFromList(item.id || item.phoneNumber, activeTab)}
                                 >
                                   Remove
                                 </button>
@@ -227,11 +291,28 @@ const PhoneListManager = () => {
                   </div>
                 </div>
               </div>
+              
+              {/* Debug section */}
+              <div className="card mt-3">
+                <div className="card-header bg-light">
+                  <h5>Debug Information</h5>
+                </div>
+                <div className="card-body">
+                  <p>Whitelist entries: {whitelist.length}</p>
+                  <p>Blacklist entries: {blacklist.length}</p>
+                  <button 
+                    className="btn btn-sm btn-secondary" 
+                    onClick={fetchPhoneLists}
+                  >
+                    Refresh Data
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           
           <div className="text-center mt-3">
-            <a href="/" className="btn btn-outline-secondary">Back to Home</a>
+            <Link to="/" className="btn btn-outline-secondary">Back to Home</Link>
           </div>
         </>
       )}
