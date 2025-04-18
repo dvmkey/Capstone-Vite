@@ -3,6 +3,7 @@ const callLogs = require('../db/models/call-logs');
 const preferences = require('../db/models/preferences');
 const whitelist = require('../db/models/whitelist');
 const phoneNumber = require('../db/models/phoneNumber');
+const callStack = require('../db/models/call-stack');
 
 const logCall = catchAsync(async (req, res, next) => {
     const body = req.body;
@@ -93,4 +94,43 @@ const pullPhone = catchAsync(async (req, res, next) => {
   });
 })
 
-module.exports = { logCall, pullPref, pullWhite, pullPhone };
+const postCall = catchAsync( async (req, res, next) => {
+  const body = req.body;
+
+  let newCall;
+    try {
+      newCall = await callStack.create({
+        ownedBy: body.ownedBy
+      });
+    } catch (error) {
+      console.error('Error during call post:', error);
+      return next(new AppError('Error saving call to stack in to the database', 500));
+    }
+  
+    if (!newCall) {
+      return next(new AppError('Failed to create a new call (Sequelize did not return a new object)', 400));
+    }
+  
+    const result = newCall.toJSON();
+  
+    return res.status(200).json({
+      status: 'success',
+      message: 'Successfully posted to Call Stack service.',
+      data: result
+    });
+});
+
+const pullCall = catchAsync(async (req, res, next) => {
+  const { ownedBy } = req.body;
+  const recentCall = await callStack.findOne({where: { ownedBy }, order: [['id', 'DESC']]});
+
+  const result = recentCall.toJSON();
+
+  return res.json({
+    status: 'success',
+    result,
+  });
+
+});
+
+module.exports = { logCall, pullPref, pullWhite, pullPhone, postCall, pullCall };
