@@ -1,5 +1,7 @@
-.container-mt-5{
-  position: center;
+.container my-5{
+  text-align: center;
+  align-items: center;
+
 }
 .gjs-button {
   vertical-align: top;
@@ -247,10 +249,10 @@ body {
 
 .card {
   transition: transform 0.3s, box-shadow 0.3s;
-  position: center;
+  text-align: center;
 }
 .card-body{
-  position: center;
+  text-align: center;
 
 }
 .card:hover {
@@ -300,6 +302,8 @@ body {
   color: white;
   min-height: 100vh;
   position: relative;
+  align-items: center;
+
   overflow-x: hidden;
 }
 
@@ -312,6 +316,7 @@ body {
 body::before {
   content: "";
   position: fixed;
+  align-items: center;
   top: 0;
   left: 0;
   width: 100%;
@@ -325,6 +330,7 @@ body::before {
   opacity: 0.3;
   animation: twinkle 3s infinite alternate;
 }
+
 
 @keyframes twinkle {
   0% { opacity: 0.2; }
@@ -341,7 +347,7 @@ body::before {
 }
 
 .shooting-star {
-  position: fixed;
+  text-align: fixed;
   width: 2px;
   height: 60px;
   background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.8), rgba(255,255,255,0));
@@ -363,13 +369,13 @@ body::before {
   backdrop-filter: blur(10px);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
+  text-align: center;
   overflow: hidden;
 }
 
 .home-section-box::before {
   content: "";
-  position: absolute;
+  text-align: center;
   top: -50%;
   left: -50%;
   width: 200%;
@@ -396,7 +402,7 @@ body::before {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
+  text-align: center;
 }
 
 .model-box:hover {
