@@ -249,10 +249,9 @@ body {
 
 .card {
   transition: transform 0.3s, box-shadow 0.3s;
-  text-align: center;
 }
 .card-body{
-  text-align: center;
+  
 
 }
 .card:hover {
