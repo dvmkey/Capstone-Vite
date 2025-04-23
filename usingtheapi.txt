@@ -51,7 +51,7 @@ Returns a token or an error depending on if the login is correct.
 
 
 ### Extension: /api/v1/users/set-(white, phone)
-```Format expected for (white/phone)):
+```Format expected for (white/phone):
 
 {
     "ownedBy" : "1",
@@ -85,4 +85,10 @@ I will likely change the schema to handle this appropriately in the future
 Pulls all calll logs for a user
 
 
+### Extension: /api/v1/app/(post, pull)-call
+```Format expected for pull/post
+{
+    "ownedBy" : "1"
+}```
 
+Post will place the call onto the stack.  Pull will return the owner of the most recent call.

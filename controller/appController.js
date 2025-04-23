@@ -121,8 +121,7 @@ const postCall = catchAsync( async (req, res, next) => {
 });
 
 const pullCall = catchAsync(async (req, res, next) => {
-  const { ownedBy } = req.body;
-  const recentCall = await callStack.findOne({where: { ownedBy }, order: [['id', 'DESC']]});
+  const recentCall = await callStack.findOne({order: [['id', 'DESC']]});
 
   const result = recentCall.toJSON();
 
