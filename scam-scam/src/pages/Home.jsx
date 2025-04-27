@@ -6,6 +6,15 @@ import "./styles.css";
 const HomePage = () => {
   const [userName, setUserName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [aiModels, setAiModels] = useState([]);
+  const [currentModel, setCurrentModel] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [callStats, setCallStats] = useState({
+    totalTimeOnCalls: 0,
+    averageCallDuration: "0:00",
+    mostUsedModel: "",
+    modelAccuracy: 0
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,8 +29,161 @@ const HomePage = () => {
       } else {
         setUserName("User");
       }
+      
+      fetchAIModels();
+      
+      fetchCallStatistics();
     }
   }, []);
+
+  const fetchAIModels = async () => {
+    setLoading(true);
+    try {
+      const personas = [
+        { key: "genZ", description: "Energetic Gen Z persona" },
+        { key: "texanDude", description: "Southern drawl, Texan vibes" },
+        { key: "shaggy", description: "Zoinks! It's Shaggy from Scooby-Doo" },
+        { key: "jackSparrow", description: "Savvy? It's the Captain himself!" }
+      ];
+      
+      const models = [];
+      for (const persona of personas) {
+        const baseUrl = "https://aivoice-chatbox-185231488037.us-central1.run.app/incoming-call?persona=";
+        const fullUrl = baseUrl + persona.key;
+        
+        try {
+          const response = await fetch(fullUrl);
+          if (response.ok) {
+            models.push({
+              id: persona.key,
+              name: persona.key.charAt(0).toUpperCase() + persona.key.slice(1),
+              description: persona.description,
+              url: fullUrl
+            });
+          }
+        } catch (error) {
+          console.error(`Error loading persona ${persona.key}:`, error);
+        }
+      }
+      
+      setAiModels(models);
+    } catch (error) {
+      console.error("Failed to load AI Models:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCallStatistics = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) return;
+    
+      const response = await fetch("/api/v1/users/pull-call", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user: userId,
+        }),
+      });
+      
+      const data = await response.json();
+      if (data.status === "success") {
+        calculateCallStats(data.result);
+      }
+    } catch (error) {
+      console.error("Error fetching call statistics:", error);
+    }
+  };
+
+  const calculateCallStats = (calls) => {
+    if (!calls || calls.length === 0) {
+      setCallStats({
+        totalTimeOnCalls: 0,
+        averageCallDuration: "0:00",
+        mostUsedModel: "None",
+        modelAccuracy: 0
+      });
+      return;
+    }
+    
+    let totalMinutes = 0;
+    const completedCalls = calls.filter(call => call.callEnd);
+    
+    completedCalls.forEach(call => {
+      const startTime = new Date(call.callStart);
+      const endTime = new Date(call.callEnd);
+      const durationMinutes = (endTime - startTime) / (1000 * 60);
+      totalMinutes += durationMinutes;
+    });
+    
+    // Calculate average call duration
+    const avgCallDuration = completedCalls.length > 0 ? totalMinutes / completedCalls.length : 0;
+    const avgMinutes = Math.floor(avgCallDuration);
+    const avgSeconds = Math.floor((avgCallDuration - avgMinutes) * 60);
+    
+    // Find most used model
+    const modelCounts = {};
+    calls.forEach(call => {
+      if (!modelCounts[call.scammerName]) {
+        modelCounts[call.scammerName] = 0;
+      }
+      modelCounts[call.scammerName]++;
+    });
+    
+    let mostUsedModel = "None";
+    let maxCount = 0;
+    
+    Object.entries(modelCounts).forEach(([model, count]) => {
+      if (count > maxCount) {
+        mostUsedModel = model;
+        maxCount = count;
+      }
+    });
+    
+    
+    setCallStats({
+      totalTimeOnCalls: totalMinutes,
+      averageCallDuration: `${avgMinutes}:${avgSeconds.toString().padStart(2, '0')}`,
+      mostUsedModel,
+      modelAccuracy
+    });
+  };
+
+  const setAI = async (personaName) => {
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        alert("User ID not found. Please log in again.");
+        return;
+      }
+      
+      const url = "https://scam-scam-service-185231488037.us-central1.run.app/api/v1/users/set-preferences";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ownedBy: userId,
+          voice: personaName,
+          prompt: ""
+        })
+      });
+      
+      if (response.ok) {
+        setCurrentModel(personaName);
+        alert(`AI model updated to: ${personaName}`);
+      } else {
+        throw new Error("Failed to update AI model");
+      }
+    } catch (error) {
+      console.error("Error setting AI model:", error);
+      alert("Failed to update AI model");
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('jwt');
@@ -29,6 +191,12 @@ const HomePage = () => {
     localStorage.removeItem('userId');
     setIsLoggedIn(false);
     window.location.href = '/login';
+  };
+
+  const formatTimeDisplay = (totalMinutes) => {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = Math.floor(totalMinutes % 60);
+    return `${hours} hrs ${minutes} mins`;
   };
 
   return (
@@ -66,6 +234,9 @@ const HomePage = () => {
       {isLoggedIn && (
         <div className="alert alert-success text-center mt-3">
           <h3>Welcome, {userName}!</h3>
+          {currentModel && (
+            <p>Current AI Model: {currentModel}</p>
+          )}
         </div>
       )}
 
@@ -94,11 +265,11 @@ const HomePage = () => {
             </div>
           </div>
           <div className="col-md-6 mb-4">
-            <div className="home-section-box">
-              <h2>Blacklist</h2>
-              <p>LIST OF BLACKLISTED (BLOCKED) NUMBERS</p>
-              <Link to="/phone-list-manager" className="btn btn-secondary">Add Number</Link>
-            </div>
+          <div className="home-section-box">
+          <h2>Saved Calls</h2>
+          <p>Select any of your past calls and see a full transcript.</p>
+          <Link to="/saved-calls" className="btn btn-secondary">View Saved Calls</Link>
+        </div>
           </div>
         </div>
       </section>
@@ -106,36 +277,34 @@ const HomePage = () => {
       {/* Models Section */}
       <section className="container my-5">
         <div className="home-section-box">
-          <h2>Models</h2>
-          <div className="row">
-            <div className="col-md-4 mb-3">
-              <div className="model-box">
-                <h3>Texan Dude</h3>
-                <p>Extremely western man.</p>
-              </div>
+          <h2>AI Models</h2>
+          {loading ? (
+            <p>Loading AI Models...</p>
+          ) : (
+            <div className="row">
+              {aiModels.map(model => (
+                <div className="col-md-3 mb-3" key={model.id}>
+                  <div className="model-box">
+                    <h3>{model.name}</h3>
+                    <p>{model.description}</p>
+                    {isLoggedIn && (
+                      <button 
+                        onClick={() => setAI(model.id)} 
+                        className={`btn ${currentModel === model.id ? 'btn-success' : 'btn-primary'}`}
+                      >
+                        {currentModel === model.id ? 'Current Model' : 'Select Model'}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {aiModels.length === 0 && !loading && (
+                <div className="col-12 text-center">
+                  <p>No AI models available at the moment.</p>
+                </div>
+              )}
             </div>
-            <div className="col-md-4 mb-3">
-              <div className="model-box">
-                <h3>Jack Sparrow</h3>
-                <p>Captain of the Black Pearl.</p>
-              </div>
-            </div>
-            <div className="col-md-4 mb-3">
-              <div className="model-box">
-                <h3>Shaggy</h3>
-                <p>Scared of ghosts and in love with food.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Saved Calls Section */}
-      <section id="testimonial-section" className="container my-5">
-        <div className="home-section-box">
-          <h2>Saved Calls</h2>
-          <p>Select any of your past calls and see a full transcript.</p>
-          <Link to="/saved-calls" className="btn btn-secondary">View Saved Calls</Link>
+          )}
         </div>
       </section>
 
@@ -144,9 +313,9 @@ const HomePage = () => {
         <div className="home-section-box">
           <h2>Performance of Your Models</h2>
           <p>
-            Most Used: Texan Dude <br />
-            Average Time on Call: 1 minute 47 seconds <br />
-            Average Accuracy of Model: 91%
+            Most Used: {callStats.mostUsedModel || "No model selected yet"} <br />
+            Total Time on Calls: {formatTimeDisplay(callStats.totalTimeOnCalls)} <br />
+            Average Time per Call: {callStats.averageCallDuration} <br />
           </p>
           <Link to="/performance" className="btn btn-secondary">View Performance of Each Model</Link>
         </div>
