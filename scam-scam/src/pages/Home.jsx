@@ -143,6 +143,8 @@ const HomePage = () => {
       }
     });
     
+    // Calculate model accuracy (placeholder calculation)
+    const modelAccuracy = 85; // Placeholder value since actual calculation is missing
     
     setCallStats({
       totalTimeOnCalls: totalMinutes,
@@ -210,7 +212,7 @@ const HomePage = () => {
               <a className="nav-link" href="#feature-section">About</a>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/phone-list-manager">Whitelist/Blacklist</Link>
+              <Link className="nav-link" to="/phone-list-manager">Whitelist</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/saved-calls">Models</Link>
@@ -277,34 +279,27 @@ const HomePage = () => {
       {/* Models Section */}
       <section className="container my-5">
         <div className="home-section-box">
-          <h2>AI Models</h2>
-          {loading ? (
-            <p>Loading AI Models...</p>
-          ) : (
-            <div className="row">
-              {aiModels.map(model => (
-                <div className="col-md-3 mb-3" key={model.id}>
-                  <div className="model-box">
-                    <h3>{model.name}</h3>
-                    <p>{model.description}</p>
-                    {isLoggedIn && (
-                      <button 
-                        onClick={() => setAI(model.id)} 
-                        className={`btn ${currentModel === model.id ? 'btn-success' : 'btn-primary'}`}
-                      >
-                        {currentModel === model.id ? 'Current Model' : 'Select Model'}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-              {aiModels.length === 0 && !loading && (
-                <div className="col-12 text-center">
-                  <p>No AI models available at the moment.</p>
-                </div>
-              )}
+          <h2>Models</h2>
+          <div className="row">
+            <div className="col-md-4 mb-3">
+              <div className="model-box">
+                <h3>Texan Dude</h3>
+                <p>Extremely western man.</p>
+              </div>
             </div>
-          )}
+            <div className="col-md-4 mb-3">
+              <div className="model-box">
+                <h3>Jack Sparrow</h3>
+                <p>Captain of the Black Pearl.</p>
+              </div>
+            </div>
+            <div className="col-md-4 mb-3">
+              <div className="model-box">
+                <h3>Shaggy</h3>
+                <p>Scared of ghosts and in love with food.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -315,7 +310,7 @@ const HomePage = () => {
           <p>
             Most Used: {callStats.mostUsedModel || "No model selected yet"} <br />
             Total Time on Calls: {formatTimeDisplay(callStats.totalTimeOnCalls)} <br />
-            Average Time per Call: {callStats.averageCallDuration} <br />
+            Average Time per Call: {callStats.averageCallDuration} minutes <br />
           </p>
           <Link to="/performance" className="btn btn-secondary">View Performance of Each Model</Link>
         </div>

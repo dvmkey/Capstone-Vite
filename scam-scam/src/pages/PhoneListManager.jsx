@@ -33,7 +33,7 @@ const Header = () => {
             <Link className="nav-link" to="/">Home</Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link active" to="/phone-list-manager">Whitelist/Blacklist</Link>
+            <Link className="nav-link active" to="/phone-list-manager">Whitelist</Link>
           </li>
           <li className="nav-item">
             <Link className="nav-link" to="/saved-calls">Saved Calls</Link>
@@ -186,12 +186,7 @@ const PhoneListManager = () => {
               </button>
             </li>
             <li className="nav-item">
-              <button 
-                className={`nav-link ${activeTab === "blacklist" ? "active" : ""}`} 
-                onClick={() => setActiveTab("blacklist")}
-              >
-                Blacklist
-              </button>
+              
             </li>
           </ul>
           
